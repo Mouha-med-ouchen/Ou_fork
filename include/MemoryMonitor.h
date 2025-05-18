@@ -1,6 +1,6 @@
 #ifndef MEMORY_MONITOR_H
 #define MEMORY_MONITOR_H
-
+using namespace std;
 #include <string>
 
 class MemoryMonitor {
@@ -12,8 +12,8 @@ public:
     double getTotalMemory() const;
     double getUsedMemory() const;
     double getFreeMemory() const;
-    std::string exportAsText() const;
-    std::string exportAsCSV() const;
+    string exportAsText() const;
+    string exportAsCSV() const;
 
 private:
     double totalMem;

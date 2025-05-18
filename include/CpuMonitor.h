@@ -1,61 +1,37 @@
-#ifndef CPU_MONITOR_H 
+#ifndef CPU_MONITOR_H
 #define CPU_MONITOR_H
 
 #include <string>
-#include <vector>
 #include <map>
+#include <functional>
 
-/**
- * @class CpuMonitor
- * @brief Classe pour surveiller l'utilisation du CPU
- */
 class CpuMonitor {
 public:
     CpuMonitor();
     ~CpuMonitor();
 
-    /**
-     * @brief Met à jour les informations du CPU
-     * @return true si la mise à jour a réussi, false sinon
-     */
     bool update();
-
-    /**
-     * @brief Obtient le pourcentage d'utilisation total du CPU
-     * @return Pourcentage d'utilisation (0-100)
-     */
     double getTotalUsage() const;
-
-    /**
-     * @brief Obtient le pourcentage d'utilisation par cœur
-     * @return Map des pourcentages d'utilisation par cœur
-     */
     std::map<std::string, double> getCoreUsage() const;
-
-    /**
-     * @brief Exporte les données au format texte
-     * @return Chaîne formatée des données CPU
-     */
     std::string exportAsText() const;
-
-    /**
-     * @brief Exporte les données au format CSV
-     * @return Chaîne CSV des données CPU
-     */
     std::string exportAsCSV() const;
+
+    // Alert feature
+    void setUsageThreshold(double threshold);
+    void setAlertCallback(std::function<void(double)> callback);
 
 private:
     struct CPUData {
-        unsigned long long user;
-        unsigned long long nice;
-        unsigned long long system;
-        unsigned long long idle;
-        unsigned long long iowait;
-        unsigned long long irq;
-        unsigned long long softirq;
-        unsigned long long steal;
-        unsigned long long guest;
-        unsigned long long guest_nice;
+        unsigned long long user = 0;
+        unsigned long long nice = 0;
+        unsigned long long system = 0;
+        unsigned long long idle = 0;
+        unsigned long long iowait = 0;
+        unsigned long long irq = 0;
+        unsigned long long softirq = 0;
+        unsigned long long steal = 0;
+        unsigned long long guest = 0;
+        unsigned long long guest_nice = 0;
     };
 
     std::map<std::string, CPUData> prevCpuData;
@@ -64,6 +40,11 @@ private:
 
     double calculateUsage(const CPUData& prev, const CPUData& current) const;
     bool readCpuData();
+    void checkAlerts();
+
+    // Alert members
+    double usageThreshold = 90.0; // default threshold 90%
+    std::function<void(double)> alertCallback = nullptr;
 };
 
-#endif // CPU_MONITOR_H
+#endif

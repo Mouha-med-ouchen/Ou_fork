@@ -8,6 +8,12 @@ int main() {
     CpuMonitor cpuMonitor;
     MemoryMonitor memMonitor;
 
+    cpuMonitor.setUsageThreshold(75.0);
+
+    cpuMonitor.setAlertCallback([](double usage) {
+        std::cout << "[ALERT] CPU usage high: " << usage << "%" << std::endl;
+    });
+
     while (true) {
         cpuMonitor.update();
         memMonitor.update();
